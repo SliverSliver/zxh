@@ -9,6 +9,7 @@ from GetTeacher import GetTeacher
 from Vote import Vote
 import os
 import MakeDir
+from GetFileName import GetFileName
 
 
 class Client:
@@ -31,11 +32,32 @@ class Client:
                     Vote.deal(line, vote)
             os.chdir("../")
 
-    # 默认按1分钟分割
+    # 默认按15分钟分割
     @staticmethod
-    def split_by_minutes(file_name, minutes=1):
+    def split_by_minutes(file_name, minutes=15):
+        dir_name = Client.split_by_hour(file_name)
+        os.chdir(dir_name)
+        file_list = GetFileName.get_all("csv")
+        for name in file_list:
+            with open(name, "r") as filein:
+                os.chdir(MakeDir.makedir(name.replace(".csv", "")))
+                stream_list = []
+                for i in range(0, 60, minutes):
+                    stream_list.append(open(name.replace(".csv", "minutes=" + str(i) + ".csv"), "w"))
+                for line in filein:
+                    nowminutes = Client.__get_time(line)
+                    stream_list[int(nowminutes / minutes)].write(line)
+                for stream in stream_list:
+                    stream.close()
+            os.chdir("../")
+        # 返回上级目录
+        os.chdir("../")
+        return dir_name
+
+    @staticmethod
+    def split_by_hour(file_name, hour=1):
         file_name = file_name
-        dir_name = file_name.replace(".csv", ".minutes=" + str(minutes))
+        dir_name = file_name.replace(".csv", ".hour=" + str(hour))
 
         # 创建目录
         MakeDir.makedir(dir_name)
@@ -43,32 +65,17 @@ class Client:
         with open(file_name, 'r') as filein:
             # 进入目录
             os.chdir(dir_name)
-            # 第一行
-            first_line = filein.readline()
-            csvlist = first_line.split(",")
-            time = Client.__get_time(csvlist[1]) + minutes
-
-            i = 0
-            fileout = open(file_name.replace(".csv", "." + str(i) + ".csv"), "w")
-            fileout.write(first_line)
+            # 创建文件
+            stream_list = []
+            for i in range(0, 24, hour):
+                stream_list.append(open(file_name.replace(".csv", "." + "hour=" + str(i) + ".csv"), "w"))
 
             for line in filein:
-                csvlist = line.split(",")
-                nowtime = Client.__get_time(csvlist[1])
+                nowhour = Client.__get_time(line, "hour")
+                stream_list[int(nowhour / hour)].write(line)
+            for stream in stream_list:
+                stream.close()
 
-                # 由于时间大于60时会归0，判断当前列时间是否为下一小时
-                if time >= 60 and nowtime <= time % 60:
-                    nowtime += 60
-
-                if nowtime < time:
-                    fileout.write(line)
-                else:
-                    time = (time + minutes) if time < 60 else (time + minutes) % 60
-                    i += 1
-                    fileout.close()
-                    fileout = open(file_name.replace(".csv", "." + str(i) + ".csv"), "w")
-                    fileout.write(line)
-            fileout.close()
         # 返回上级目录
         os.chdir("../")
         return dir_name
@@ -92,8 +99,10 @@ class Client:
         return dir_name
 
     @staticmethod
-    def __get_time(date):
-        date = date.replace("[", "").replace("]", "")
-        date = date.split("/")[2]
-        time = date.split(":")[2]
+    def __get_time(date, time_type="minutes"):
+        time = ""
+        if time_type == "minutes":
+            time = date.split(":")[2]
+        elif time_type == "hour":
+            time = date.split(":")[1]
         return int(time)
