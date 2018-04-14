@@ -1,9 +1,9 @@
-def txt2csv(inputFileName, outputFileName):
-    with open(outputFileName, 'wb') as csvfile:
-        with open(inputFileName, 'rb') as filein:
+def txt2csv(input_file_name):
+    output_file_name = input_file_name.replace(".txt", ".csv")
+    with open(output_file_name, 'w') as csvfile:
+        with open(input_file_name, 'r') as filein:
             for line in filein:
-                line = bytes.decode(line)
                 line = line.replace("- - ", "").replace(' +0800', '').replace('"', '') \
                     .replace(' HTTP/1.0', '').replace(' ', ',')
-                line = str.encode(line)
                 csvfile.write(line)
+    return output_file_name
