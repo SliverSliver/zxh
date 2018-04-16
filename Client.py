@@ -38,9 +38,12 @@ class Client:
         dir_name = Client.split_by_hour(file_name)
         os.chdir(dir_name)
         file_list = GetFileName.get_all("csv")
+        dir_list = []
         for name in file_list:
             with open(name, "r") as filein:
-                os.chdir(MakeDir.makedir(name.replace(".csv", "")))
+                temp = MakeDir.makedir(name.replace(".csv", ""))
+                dir_list.append(temp)
+                os.chdir(temp)
                 stream_list = []
                 for i in range(0, 60, minutes):
                     stream_list.append(open(name.replace(".csv", "minutes=" + str(i) + ".csv"), "w"))
@@ -52,7 +55,7 @@ class Client:
             os.chdir("../")
         # 返回上级目录
         os.chdir("../")
-        return dir_name
+        return dir_name, dir_list
 
     @staticmethod
     def split_by_hour(file_name, hour=1):
