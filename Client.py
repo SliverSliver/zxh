@@ -17,7 +17,8 @@ class Client:
     @staticmethod
     def assign_by_request(file_name):
         with open(file_name, "r") as filein:
-            os.chdir(MakeDir.makedir(file_name.replace(".csv", "")))
+            dir_name = file_name.replace(".csv", "")
+            os.chdir(MakeDir.makedir(dir_name))
             get_teacher = GetTeacher.init(file_name)
             vote = Vote.init(file_name)
             get_teachers = GetTeachers.init(file_name)
@@ -31,6 +32,7 @@ class Client:
                 elif line_list[3].find("vote") != -1:
                     Vote.deal(line, vote)
             os.chdir("../")
+        return dir_name
 
     # 默认按15分钟分割
     @staticmethod
@@ -109,3 +111,24 @@ class Client:
         elif time_type == "hour":
             time = date.split(":")[1]
         return int(time)
+
+    @staticmethod
+    def get_repeat_ip(*file_name_list):
+        ip_map = {}
+        for file_name in file_name_list:
+            with open(file_name, "r") as filein:
+                for line in filein:
+                    ip = line.split(",")[0]
+                    if ip in ip_map.keys():
+                        ip_map[ip] = ip_map.get(ip) + 1
+                    else:
+                        ip_map[ip] = 1
+        with open("C:\\Users\\hasee\\IdeaProjects\\zxh\\" + "repeat_ip.csv",
+                  "a+") as fileout:
+            with open("C:\\Users\\hasee\\IdeaProjects\\zxh\\" + "repeat_ip100.csv",
+                      "a+") as fileout100:
+                for k, v in ip_map.items():
+                    if v > 5:
+                        fileout.write(k + "," + str(v) + "\n")
+                    if v > 100:
+                        fileout100.write(k + "," + str(v) + "\n")
