@@ -124,9 +124,9 @@ class Client:
                     else:
                         ip_map[ip] = 1
         with open("C:\\Users\\hasee\\IdeaProjects\\zxh\\" + "repeat_ip.csv",
-                  "a+") as fileout:
+                  "w") as fileout:
             with open("C:\\Users\\hasee\\IdeaProjects\\zxh\\" + "repeat_ip100.csv",
-                      "a+") as fileout100:
+                      "w") as fileout100:
                 for k, v in ip_map.items():
                     if v > 5:
                         fileout.write(k + "," + str(v) + "\n")
