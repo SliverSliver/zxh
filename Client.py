@@ -80,6 +80,7 @@ class Client:
         os.chdir("../")
         return dir_name, dir_list
 
+    # 按小时分割，默认一小时
     @staticmethod
     def split_by_hour(file_name, hour=1):
         file_name = file_name
