@@ -48,7 +48,7 @@ class Client:
                 os.chdir(temp)
                 stream_list = []
                 for i in range(0, 60, minutes):
-                    stream_list.append(open(name.replace(".csv", "minutes=" + str(i) + ".csv"), "w"))
+                    stream_list.append(open(name.replace(".csv", "minutes=" + str("%02d" % i) + ".csv"), "w"))
                 for line in filein:
                     nowminutes = Client.__get_time(line)
                     stream_list[int(nowminutes / minutes)].write(line)
@@ -62,7 +62,7 @@ class Client:
     @staticmethod
     def split_by_hour(file_name, hour=1):
         file_name = file_name
-        dir_name = file_name.replace(".csv", ".hour=" + str(hour))
+        dir_name = file_name.replace(".csv", ".hour=" + str("%02d" % hour))
 
         # 创建目录
         MakeDir.makedir(dir_name)
@@ -73,7 +73,7 @@ class Client:
             # 创建文件
             stream_list = []
             for i in range(0, 24, hour):
-                stream_list.append(open(file_name.replace(".csv", "." + "hour=" + str(i) + ".csv"), "w"))
+                stream_list.append(open(file_name.replace(".csv", "." + "hour=" + str("%02d" % i) + ".csv"), "w"))
 
             for line in filein:
                 nowhour = Client.__get_time(line, "hour")

@@ -26,7 +26,7 @@ class GetTeacher:
         stream = stream[0]
         os.chdir(dir_name)
         line_list = line.split(",")
-        if line_list[4] == "200" and line_list[5] == "43\n":
+        if line_list[4] == "200" and line_list[5].find("43") != -1:
             stream[1].write(line)
         elif line_list[4] == "200":
             stream[0].write(line)
