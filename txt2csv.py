@@ -1,5 +1,5 @@
-def txt2csv(input_file_name):
-    output_file_name = input_file_name.replace("localhost_access_", "").replace(".txt", ".csv")
+def txt2csv(input_file_name, suffix="txt"):
+    output_file_name = input_file_name.replace("localhost_access_", "").replace("." + suffix, ".csv")
     with open(output_file_name, 'w') as csvfile:
         with open(input_file_name, 'r') as filein:
             for line in filein:
