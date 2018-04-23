@@ -5,12 +5,12 @@ import os
 
 if __name__ == "__main__":
     # 获取所有txt文件
-    # txt_list = GetFileName.get_all("txt")
-    # for txt in txt_list:
-    #     # 转换csv文件名
-    #     out_file_name = txt2csv.txt2csv(txt)
+    txt_list = GetFileName.get_all("txt")
+    for txt in txt_list:
+        # 转换csv文件名
+        out_file_name = txt2csv.txt2csv(txt)
     #     dir_name = Client.assign_by_request(out_file_name)
-    Client.get_repeat_ip("1.vote.right.csv", "2.vote.right.csv", "3.vote.right.csv")
+    # Client.get_repeat_ip("1.vote.right.csv", "2.vote.right.csv", "3.vote.right.csv")
         # 按分钟分割csv, 返回目录名
         # dir_name, dir_list = Client.split_by_minutes(out_file_name, 15)
         # print(dir_name)  # log.2018-04-14.hour=1
