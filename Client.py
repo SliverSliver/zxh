@@ -15,6 +15,26 @@ from GetFileName import GetFileName
 class Client:
 
     @staticmethod
+    def assign_by_teachers(file_name):
+        with open(file_name, "r") as filein:
+            dir_name = file_name.replace(".csv", "")
+            os.chdir(MakeDir.makedir(dir_name))
+            get_teacher = GetTeacher.init(file_name)
+            vote = Vote.init(file_name)
+            get_teachers = GetTeachers.init(file_name)
+
+            for line in filein:
+                line_list = line.split(",")
+                if line_list[3].find("getTeachers") != -1:
+                    GetTeachers.deal(line, get_teachers)
+                elif line_list[3].find("getTeacher") != -1:
+                    GetTeacher.deal(line, get_teacher)
+                elif line_list[3].find("vote") != -1:
+                    Vote.deal(line, vote)
+            os.chdir("../")
+        return dir_name
+
+    @staticmethod
     def assign_by_request(file_name):
         with open(file_name, "r") as filein:
             dir_name = file_name.replace(".csv", "")
@@ -42,13 +62,14 @@ class Client:
         file_list = GetFileName.get_all("csv")
         dir_list = []
         for name in file_list:
-            with open(name, "r") as filein:
+            with open(name, "r", encoding='UTF-8') as filein:
                 temp = MakeDir.makedir(name.replace(".csv", ""))
                 dir_list.append(temp)
                 os.chdir(temp)
                 stream_list = []
                 for i in range(0, 60, minutes):
-                    stream_list.append(open(name.replace(".csv", "minutes=" + str(i) + ".csv"), "w"))
+                    stream_list.append(open(name.replace(".csv", "minutes=" + str(i).zfill(2) + ".csv"), "w"
+                                            , encoding='UTF-8'))
                 for line in filein:
                     nowminutes = Client.__get_time(line)
                     stream_list[int(nowminutes / minutes)].write(line)
@@ -67,13 +88,14 @@ class Client:
         # 创建目录
         MakeDir.makedir(dir_name)
         # 打开文件
-        with open(file_name, 'r') as filein:
+        with open(file_name, 'r', encoding='UTF-8') as filein:
             # 进入目录
             os.chdir(dir_name)
             # 创建文件
             stream_list = []
             for i in range(0, 24, hour):
-                stream_list.append(open(file_name.replace(".csv", "." + "hour=" + str(i) + ".csv"), "w"))
+                stream_list.append(open(file_name.replace(".csv", "." + "hour=" + str(i).zfill(2) + ".csv"), "w"
+                                        , encoding='UTF-8'))
 
             for line in filein:
                 nowhour = Client.__get_time(line, "hour")
@@ -107,9 +129,9 @@ class Client:
     def __get_time(date, time_type="minutes"):
         time = ""
         if time_type == "minutes":
-            time = date.split(":")[2]
-        elif time_type == "hour":
             time = date.split(":")[1]
+        elif time_type == "hour":
+            time = date.split(":")[0].split(",")[1]
         return int(time)
 
     @staticmethod
