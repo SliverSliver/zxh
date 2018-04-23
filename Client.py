@@ -24,6 +24,7 @@ class Client:
             get_teachers = GetTeachers.init(file_name)
 
             for line in filein:
+                line.replace("\n", "")
                 line_list = line.split(",")
                 if line_list[3].find("getTeachers") != -1:
                     GetTeachers.deal(line, get_teachers)

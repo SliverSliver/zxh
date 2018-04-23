@@ -29,11 +29,11 @@ class Vote:
         os.chdir(dir_name)
         line_list = line.split(",")
         if line_list[4] == "200":
-            if line_list[5].find("45") != -1:
+            if line_list[5] == "45":
                 stream[0].write(line)
-            elif line_list[5].find("49") != -1:
+            elif line_list[5] == "49":
                 stream[1].write(line)
-            elif line_list[5].find("43") != -1:
+            elif line_list[5] == "43":
                 stream[3].write(line)
         else:
             stream[2].write(line)
